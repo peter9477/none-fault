@@ -48,15 +48,23 @@ fn oom(_layout: core::alloc::Layout) -> ! {
     }
 }
 
+struct Lol {
+    a: UnsafeCell<MaybeUninit<[u8; SIZE]>>,
+}
+
+unsafe impl Sync for Lol {}
+
+use core::{cell::UnsafeCell, sync::atomic::{compiler_fence, Ordering}};
+use ::core::mem::MaybeUninit;
+const SIZE: usize = 1 * 1024;
+static HEAP: Lol = Lol { a: UnsafeCell::new(MaybeUninit::uninit()) };
 
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
     // Initialize the allocator BEFORE you use it
     {
-        use ::core::mem::MaybeUninit;
-        const SIZE: usize = 1 * 1024;
-        static mut HEAP: [MaybeUninit<u8>; SIZE] = [MaybeUninit::uninit(); SIZE];
-        unsafe { ALLOCATOR.init(HEAP.as_ptr() as usize, SIZE) }
+        assert_eq!(core::mem::size_of_val(&HEAP), SIZE);
+        unsafe { ALLOCATOR.init(HEAP.a.get() as usize, SIZE) }
     }
 
     // initialize embassy
@@ -74,11 +82,16 @@ async fn main(spawner: Spawner) {
     let _ = spawner.spawn(task2());
 
     // sleep_secs(1).await;
-    rprintln!("fail now?");
-
+    // rprintln!("fail now?");
+    compiler_fence(Ordering::SeqCst);
+    let x = alloc::boxed::Box::new([0u8; 256]);
+    // rprintln!("fail now3?");
     let x = format!("{:?}", None::<usize>);
-    // let x = format!("{:?}", Some(23usize));
+    compiler_fence(Ordering::SeqCst);
+    // rprintln!("fail now2?");
+    // // let x = format!("{:?}", Some(23usize));
     rprintln!("format!: {}", x);
+    // rprintln!("{:?}", None::<usize>);
 
     // let x: Option<usize> = None;
     // debug!("test: {:?}", x);
@@ -109,7 +122,9 @@ pub async fn sleep_secs(v: u32) {
 #[cfg(not(feature = "term"))]
 #[embassy_executor::task]
 pub async fn task1() {
+    // return;
     sleep_secs(500).await;
+    compiler_fence(Ordering::SeqCst);
     // core::future::pending::<()>().await; // does not fail with this instead
 
     // Removing these lines shifts stuff around and usually prevents failure:
@@ -119,7 +134,9 @@ pub async fn task1() {
 
 #[embassy_executor::task]
 async fn task2() {
+    // return;
     sleep_secs(500).await;
+    compiler_fence(Ordering::SeqCst);
     // core::future::pending::<()>().await; // does not fail with this instead
 
     // Removing these lines shifts stuff around and usually prevents failure:

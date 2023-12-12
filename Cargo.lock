@@ -455,7 +455,7 @@ dependencies = [
  "embedded-alloc",
  "nrf52840-hal",
  "panic-rtt-target",
- "rtt-target 0.4.0",
+ "rtt-target",
 ]
 
 [[package]]
@@ -623,11 +623,10 @@ dependencies = [
 [[package]]
 name = "panic-rtt-target"
 version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d6ab67bc881453e4c90f958c657c1303670ea87bc1a16e87fd71a40f656dce9"
+source = "git+https://github.com/probe-rs/rtt-target?rev=59b236ce50e44826031adbfc12742e4a0b8d5d6c#59b236ce50e44826031adbfc12742e4a0b8d5d6c"
 dependencies = [
  "cortex-m",
- "rtt-target 0.3.1",
+ "rtt-target",
 ]
 
 [[package]]
@@ -677,18 +676,8 @@ checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 
 [[package]]
 name = "rtt-target"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "065d6058bb1204f51a562a67209e1817cf714759d5cf845aa45c75fa7b0b9d9b"
-dependencies = [
- "ufmt-write",
-]
-
-[[package]]
-name = "rtt-target"
 version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3afa12c77ba1b9bf560e4039a9b9a08bb9cde0e9e6923955eeb917dd8d5cf303"
+source = "git+https://github.com/probe-rs/rtt-target?rev=59b236ce50e44826031adbfc12742e4a0b8d5d6c#59b236ce50e44826031adbfc12742e4a0b8d5d6c"
 dependencies = [
  "critical-section",
  "ufmt-write",

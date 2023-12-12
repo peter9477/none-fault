@@ -12,3 +12,6 @@ rustflags = [
     # LLVM linker:
     "-C", "link-arg=-Map=build.map",
 ]
+
+[unstable]
+build-std = ["core", "alloc"]
