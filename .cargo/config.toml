@@ -1,0 +1,14 @@
+[build]
+target = "thumbv7em-none-eabihf"     # Cortex-M4F and Cortex-M7F (with FPU)
+
+[net]
+git-fetch-with-cli = false
+
+[target.'cfg(all(target_arch = "arm"))']
+rustflags = [
+    # GNU linker:
+    # "-C", "link-arg=-Wl,-Map=hwtest.map",
+
+    # LLVM linker:
+    "-C", "link-arg=-Map=build.map",
+]

@@ -1,0 +1,16 @@
+# This file is used only when you don't specify e.g. "cargo +nightly".
+# Otherwise the command line can override this file, at least for the channel.
+
+[toolchain]
+# Code hard-faults somehow in relation to Debug-formatting an Option::None
+# but only with nightly 2023-08-09 or later.
+
+# channel = "nightly-2023-08-08"  # rustc 1.73.0-nightly (03a119b0b 2023-08-07)
+channel = "nightly-2023-08-09" # rustc 1.73.0-nightly (f88a8b71c 2023-08-08)
+
+# These are used only to make sure the specified toolchain has these
+# various components and properties set up, so once they've been installed
+# they're not really used again each time you run cargo.
+components = [ "clippy", "rustfmt", "rust-src", "llvm-tools-preview" ]
+targets = [ "thumbv7em-none-eabihf" ]
+profile = "minimal"
